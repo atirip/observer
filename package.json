@@ -1,0 +1,23 @@
+{
+  "name": "@atirip/observer",
+  "version": "1.0.0",
+  "description": "Object Observer",
+  "main": "observer.js",
+  "directories": {
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atirip/observer.git"
+  },
+  "author": "Priit Pirita",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/atirip/observer/issues"
+  },
+  "homepage": "https://github.com/atirip/observer#readme"
+}
