@@ -1,4 +1,3 @@
-//USAGE: ../../node_modules/mocha/bin/mocha estonian-notation.spec.js
 
 import { expect } from 'chai';
 import { validateProperty, validateArrayMutation } from '../extra/estonian-notation.js';

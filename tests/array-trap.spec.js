@@ -1,4 +1,3 @@
-//USAGE: ../../node_modules/mocha/bin/mocha array-trap.spec.js
 
 import { expect } from 'chai';
 import {ArrayTrap} from '../array-trap.js';

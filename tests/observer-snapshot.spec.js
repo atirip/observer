@@ -1,4 +1,3 @@
-//USAGE: ../../node_modules/mocha/bin/mocha observer-snapshot.spec.js
 
 import { expect } from 'chai';
 import { createObserver as createObservable } from '../observer.js';
