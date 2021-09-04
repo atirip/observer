@@ -8,15 +8,17 @@ Observing and validation Proxy for Objects and Arrays.
 Creating Proxy is easy, but the result is hardly useful out of the box.
 
 
-Object Observer has:
+Object Observer:
 
-1) Nesting suppport, nested objects are automatically proxified
+1) Has nesting suppport, nested objects are automatically proxified
 
-2) Array support, array changes are detected as one transform, not like sequence of property changes
+2) Has full array support, array changes are detected as one transform, not like sequence of property changes
 
-3) Path support, changes in nested objects are meaningful in root object context
+3) Has path support, changes in nested objects are meaningful in root object context
 
-4) undo/redo/snapshot support, all recorded changes can be applied back and forth
+4) Has undo/redo/snapshot support, all recorded changes can be applied back and forth
+
+5) Keeps "shadow pure" object fully in sync with proxied one
 
 
 ## Example
@@ -54,7 +56,12 @@ Object Observer has:
 
 	// Objects
 	let simple = createSimpleProxy({ name: 'John' });
-	let observer = createProxy({ name: 'John' });
+	
+	let pure = { name: 'John' };
+	let observer = createProxy(pure);
+
+	// this 'pure' object is always in sync with proxied ones
+	JSON.stringify(pure) == JSON.stringify(observer); // true
 
 	simple.name = 'Pete'; // changed "name" to "Pete"
 	observer.name = 'Pete'; // set 'name' to 'Pete'
@@ -82,5 +89,42 @@ Object Observer has:
 	array.shift(); // splice: 0,[1],[]
 	// meaning spliced at index 0, removed [1] and inserted nothing, every array mutation description has specific arguments
 
+	// "pure" object is always deep equal to proxied one
+	JSON.stringify(pure) == JSON.stringify(observer); // true
+
+	// Proxied objects are not clonable
+	function idbtest(data) {
+		let open = window.indexedDB.open('db', 1);
+		let store = 'store';
+		open.onupgradeneeded = function() {
+			open.result.createObjectStore(store);
+		}
+		open.onsuccess = function() {
+			let tx = open.result.transaction(store, 'readwrite');
+			tx.objectStore(store).put(data, 'test');
+			tx.oncomplete = function() {
+				console.log('transaction complete');
+			}
+		}	
+	}
+
+	idbtest(observer); // put failed: DOMException: Failed to execute 'put' on 'IDBObjectStore': #<Object> could not be cloned.
+
+	// we can always use 'pure' object
+	idbtest(pure); // transaction complete
 
 
+	// Proxy is slow to read, when in need of extensive reads, one can always safely read from 'pure' object
+	// try one million reads
+	let max = 1000000;
+	console.time('pure read');
+	for (let i = 0; i < max; i++) {
+		let a = pure.data.address;
+	}
+	console.timeEnd('pure read'); // pure read: 4.2470703125 ms
+
+	console.time('proxy read');
+	for (let i = 0; i < max; i++) {
+		let a = observer.data.address;
+	}
+	console.timeEnd('proxy read'); // proxy read: 282.31201171875 ms
