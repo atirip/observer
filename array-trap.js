@@ -1,16 +1,20 @@
 /*
-		This module traps array function calls and legth direct access and produces change that is undoabele and redoable
-		
+		This module traps array function calls and legth direct access and produces change record that is undoable and redoable
+
+
+		import {ArrayTrap} from './array-trap.js';
+		import {ArrayUndoRedo} from './undo-redo.js';		
+
 		let p = new ArrayTrap();
 		let a = [];
 
 		p.push(a, 1, 2, 3, 4, 5, 6, 7);
 		expect(a).to.deep.equal([1, 2, 3, 4, 5, 6, 7]);
 
-		ArrayTrap.undo(a, p.change);
+		ArrayUndoRedo.undo(a, p.change);
 		expect(a).to.deep.equal([]);
 
-		ArrayTrap.redo(a, p.change);
+		ArrayUndoRedo.redo(a, p.change);
 		expect(a).to.deep.equal([1, 2, 3, 4, 5, 6, 7]);
 		
 		optional create argument for undo/redo is to create specific object from standard Object that JSON.parse() will return

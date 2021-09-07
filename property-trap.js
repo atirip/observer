@@ -1,6 +1,10 @@
 
 /*
 		This is counterpart to ArrayTrap to unify undo/redo calls, it produces the same kind of a change that is  is undoabele and redoable
+
+
+		import {PropertyTrap} from './property-trap.js';
+		import {PropertyUndoRedo} from './undo-redo.js';	
 		
 		let p = new PropertyTrap();
 		let o = {a: 1}
@@ -8,10 +12,10 @@
 		p.setProperty(o, 'a', 2);
 		expect(a).to.deep.equal({a: 2});
 
-		PropertyTrap.undo(a, p.change);
+		PropertyUndoRedo.undo(a, p.change);
 		expect(a).to.deep.equal({a: 1});
 
-		PropertyTrap.redo(a, p.change);
+		PropertyUndoRedo.redo(a, p.change);
 		expect(a).to.deep.equal({a: 2});
 		
 	
