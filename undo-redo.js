@@ -77,7 +77,7 @@ class ArrayUndoRedo {
 
 class PropertyUndoRedo {
 	static undo(obj, change) {
-		let [key, op, , prevValue] = change;
+		let [op, key, , prevValue] = change;
 		if (op == 'delete') {
 			obj[key] = prevValue;
 		} else if (op == 'set') {
@@ -86,7 +86,7 @@ class PropertyUndoRedo {
 	}
 
 	static redo(obj, change) {
-		let [key, op, newValue] = change;
+		let [op, key, newValue] = change;
 		if (op == 'delete') {
 			delete obj[key];
 		} else if (op == 'set') {

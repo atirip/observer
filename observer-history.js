@@ -14,17 +14,14 @@ function applyChanges(target, method, changes, createObject) {
 		let [pth, op] = change;
 		let propOp = op == 'set' || op == 'delete';
 
-		let keys = pth.split('/');
+		let keys = pth ? pth.split('/') : [];
 		if (pth.charAt(0) == '/') keys.shift();
-		let prop = propOp ? keys.pop() : undefined;
 		let obj = target;
 		for (let key of keys.values()) {
 			obj = obj[key];
 		}
 		let args = Array.prototype.slice.call(change, 1);
-		if (propOp) {
-			args.unshift(prop);
-		} else if (args[0] == 'splice') {
+		if (args[0] == 'splice') {
 			for (let i of [2, 3]) args[i] = prepareObjects(obj, args[i]);
 		}
 		(propOp ? PropertyUndoRedo : ArrayUndoRedo)[method](obj, args, createObject ? createObject.bind(obj) : undefined);
@@ -46,15 +43,8 @@ function applyChanges(target, method, changes, createObject) {
 }
 
 function getChange(filter, target, ...args) {
-	let key = args[0];
-	let op = args[1];
-
-	let propOp = op == 'set' || op == 'delete';
-	let pth = path(target, propOp ? key : undefined);
+	let pth = path(target);
 	if (!filter || filter(pth)) {
-		// we do not need key in args anymore
-		if (propOp) args.shift();
-		// we need to clone possible array-trap deleted/inserted arrays
 		args = extend(args);
 		return [pth, ...args];
 	}

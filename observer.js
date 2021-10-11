@@ -91,26 +91,26 @@ let win = globalThis;
 	VALIDATE: target, property, operation, arguments
 	
 		on object: delete of set
-			property, 'delete',  valueRef
-			property, 'set',valueRef, prev
+			'delete', property,  valueRef
+			'set', property, valueRef, prev
 		
 		on array: push or shift
-			property, 'push', ...args
-			property, 'shift', ...args
+			'push', ...args
+			'shift', ...args
 
 	ONCHANGE: target, operation, arguments
 	
 		on object property property or direct access of array element: delete or set
-			property, 'delete',value, prev
-			property, 'set', value, prev
+			'delete', property, value, prev
+			'set', property, value, prev
 
 		on array mutation functions or direct length change: splice, sort, reverse, copyWithin, length
-			property, 'splice', start, deleted, inserted
-			property, 'sort', map
-			property, 'reverse'
-			property, 'copyWithin', target, start, copied;
-			property, 'fill', value, start, filled;
-			property, 'length', len, prev
+			'splice', start, deleted, inserted
+			'sort', map
+			'reverse'
+			'copyWithin', target, start, copied;
+			'fill', value, start, filled;
+			'length', len, prev
 	*/
 
 let map = new WeakMap();

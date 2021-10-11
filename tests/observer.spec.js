@@ -46,7 +46,7 @@ describe('Object Observer', function () {
 				number: 231321,
 			},
 			undefined,
-			function (target, key, op, valueRef, prev) {
+			function (target, op, key, valueRef, prev) {
 				if (key == 'boolean') {
 					// allow all changes
 					return true;
@@ -78,7 +78,7 @@ describe('Object Observer', function () {
 	});
 
 	it('detect changes', function () {
-		createObservable(extend(source), function (target, key, op, value, prev, receiver) {
+		createObservable(extend(source), function (target, op, key, value, prev, receiver) {
 			expect(key).to.equal('boolean');
 			expect(value).to.equal(false);
 			expect(prev).to.equal(true);
@@ -86,7 +86,7 @@ describe('Object Observer', function () {
 		}).boolean = false;
 
 		let obj = extend(source);
-		createObservable(obj, function (target, key, op, value, prev, receiver) {
+		createObservable(obj, function (target, op, key, value, prev, receiver) {
 			expect(key).to.equal('id');
 			expect(value).to.equal('blaah');
 			expect(prev).to.equal(source.array[4].id);

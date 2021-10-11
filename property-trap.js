@@ -34,9 +34,9 @@ export class PropertyTrap {
 		valueRef.value = value;
 		let prev = obj[key];
 		// validate is supposed to mangle the value if needed, it can change value to be appropriate
-		if (validate(obj, key, 'set', valueRef, prev)) {
+		if (validate(obj, 'set', key, valueRef, prev)) {
 			obj[key] = valueRef.value;
-			this.change = [key, 'set', valueRef.value, prev];
+			this.change = ['set', key, valueRef.value, prev];
 		} else {
 			return false;
 		}
@@ -49,7 +49,7 @@ export class PropertyTrap {
 		let valueRef = this.valueRef;
 		valueRef.value = undefined;
 		let prev = obj[key];
-		let approved = validate(obj, key, 'delete', valueRef, prev);
+		let approved = validate(obj, 'delete', key, valueRef, prev);
 		let changed = approved;
 		if (approved) {
 			delete obj[key];
@@ -61,7 +61,7 @@ export class PropertyTrap {
 			}
 		}
 		if (changed) {
-			this.change = [key, 'delete', valueRef.value, prev];
+			this.change = ['delete', key, valueRef.value, prev];
 		}
 		return approved;
 	}
