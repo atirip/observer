@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import { createObserver as createObservable, path, xpath, nameSymbol } from '../observer.js';
+import { createObserver as createObservable, path, retrieve, nameSymbol } from '../observer.js';
 import { extend } from '../utils.js';
 
 describe('Object Observer', function () {
@@ -106,10 +106,10 @@ describe('Object Observer', function () {
 			return true;
 		});
 		expect(path(p.array[4])).to.equal('array/4');
-		expect(xpath(p, 'array/4')).to.deep.equal(source.array[4]);
+		expect(retrieve(p, 'array/4')).to.deep.equal(source.array[4]);
 
 		expect(path(p.array[4], 'id')).to.equal('array/4/id');
-		expect(xpath(p, 'array/4/id')).to.equal(source.array[4].id);
+		expect(retrieve(p, 'array/4/id')).to.equal(source.array[4].id);
 
 		p = createObservable(
 			extend(source),
@@ -120,9 +120,9 @@ describe('Object Observer', function () {
 			'obj'
 		);
 		expect(path(p.array[4])).to.equal('obj/array/4');
-		expect(xpath(p, 'obj/array/4')).to.deep.equal(source.array[4]);
+		expect(retrieve(p, 'obj/array/4')).to.deep.equal(source.array[4]);
 
 		expect(path(p.array[4], 'id')).to.equal('obj/array/4/id');
-		expect(xpath(p, 'obj/array/4/id')).to.equal(source.array[4].id);
+		expect(retrieve(p, 'obj/array/4/id')).to.equal(source.array[4].id);
 	});
 });

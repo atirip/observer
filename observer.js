@@ -44,13 +44,28 @@ function name(obj) {
 }
 
 function path(target, key, targetIsParents) {
+	return arrayPath.apply(this, arguments).join('/');
+	/*
 	let p = (targetIsParents ? target : parents(target, true)).map(name).join('/');
 	if (key !== undefined) p += '/' + key;
 	return p.charAt(0) == '/' ? p.substr(1) : p;
+	*/
 }
 
-function xpath(obj, p) {
+function arrayPath(target, key, targetIsParents) {
+	let p = (targetIsParents ? target : parents(target, true)).map(name);
+	if (key !== undefined) p.push(key);
+	// root has no name
+	if (!p[0]) p.shift();
+	return p;
+}
+
+function retrieve(obj, p = '/') {
 	if (p !== String(p)) return;
+	
+	if (p == '/') return obj;
+	if (p.charAt(0) == '/') p = p.substr(1);
+	
 	let keys = p.split('/');
 	if (name(obj)) keys.shift();
 	for (let key of values(keys)) {
@@ -182,4 +197,4 @@ function createObserver(
 }
 
 
-export { parentSymbol, nameSymbol, parent, path, xpath, createObserver };
+export { parentSymbol, nameSymbol, parent, path, retrieve, createObserver, arrayPath };
