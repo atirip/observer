@@ -42,17 +42,20 @@ function createSimpleProxy(obj) {
 		},
 	});
 }
-
+	
 function createProxy(obj) {
-	return createObserver(obj, function (target, ...args) {
+	return createObserver(obj, function explain(target, op, ...args) {
+		let path;
+		let desc = '';
 		if (Array.isArray(target)) {
-			let func = args.shift();
-			let desc = args.map((a) => stringify(a)).join(',');
-			console.log(`${func}: ${desc}`);
+			path = '/' + getPath(target);
+			desc = args.map((a) => stringify(a)).join(',');
 		} else {
-			let prop = path(target, args[0]);
-			console.log(`${args[1]} '${prop}' to '${stringify(args[2])}'`);
+			let [prop, newValue] = args;
+			path = '/' + getPath(target, prop);
+			if (op != 'delete') desc = stringify(newValue);
 		}
+		console.log(`${op} '${path}' to '${desc}'`);
 	});
 }
 
@@ -72,9 +75,9 @@ simple.data = { address: 'Silicon Valley' }; // changed 'data' to '{"address":"S
 // no change detected
 simple.data.address = 'New York'; //
 
-observer.data = { address: 'Silicon Valley' }; // set 'data' to '{"address":"Silicon Valley"}'
+observer.data = { address: 'Silicon Valley' }; // set '/data' to '{"address":"Silicon Valley"}'
 // change is detected with path
-observer.data.address = 'New York'; // set 'data/address' to 'New York'
+observer.data.address = 'New York'; // set '/data/address' to 'New York'
 
 // no additional properties to mess up the "pure" Object
 console.log(Object.keys(observer)); // ["name", "data"]
