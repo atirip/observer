@@ -25,7 +25,7 @@ Object Observer:
 ## Example
 
 ```js
-import { path, createObserver } from './observer.js';
+import { path as getPath, createObserver } from './observer.js';
 
 function stringify(val) {
 	return typeof val == 'object' && val ? JSON.stringify(val) : val;
@@ -133,4 +133,38 @@ for (let i = 0; i < max; i++) {
 	let a = observer.data.address;
 }
 console.timeEnd('proxy read'); // proxy read: 282.31201171875 ms
+```
+
+## Usage
+
+This repository only contains pure ES6 modules (consumable in browsers without transpiling) and nothing else. 
+If that is not enough, then recommended usage is to fork and then adjust, transpile, bundle, whatever one needs.
+
+```js
+import {createObserver} from './observer/observer.js';
+
+let original = {};
+
+let proxy = createObserver(original, function onchange(target, ...args) {
+	/*
+		target is the object changed
+		
+		args will be:
+		
+		on object property or array direct access:
+			'delete', property, value, prev
+			'set', property, value, prev
+
+		on array mutation functions or direct length change:
+			'splice', start, array of deleted elements, array of inserted elements
+			'sort', array of changes in format [newIndex, prevIndex]
+			'reverse'
+			'copyWithin', target, start, array of overwritten elements;
+			'fill', fillValue, start, array of overwritten elements;
+			'length', len, prev
+			
+		array mutation functions 'push', 'pop', 'shift', 'unshift' are reported as calls to 'splice'
+		
+	*/
+})
 ```

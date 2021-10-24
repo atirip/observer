@@ -88,29 +88,44 @@ function redefineArrayNames(target) {
 let win = globalThis;
 
 /*
-	VALIDATE: target, property, operation, arguments
+	VALIDATE: target, ...args
+
+		target is the object changed
+
+		args:
 	
-		on object: delete of set
-			'delete', property,  valueRef
+		on object:
+			'delete', property, valueRef
 			'set', property, valueRef, prev
 		
-		on array: push or shift
-			'push', ...args
-			'shift', ...args
+		on object property validation valueRef is object with one property called value and can be changed. For example if incorrect type
+		of value is provided, then inside validation it may be cast to correct type
+		
+		on array: 
+			name of actual function called, array of actual arguments passed to that array function
+			
+		on array function call validation the arguments the arguments can be changed
+		
 
-	ONCHANGE: target, operation, arguments
-	
-		on object property property or direct access of array element: delete or set
+	ONCHANGE: target, ...args
+
+		target is the object changed
+
+		args:
+
+		on object property or array direct access:
 			'delete', property, value, prev
 			'set', property, value, prev
 
-		on array mutation functions or direct length change: splice, sort, reverse, copyWithin, length
-			'splice', start, deleted, inserted
-			'sort', map
+		on array mutation functions or direct length change:
+			'splice', start, array of deleted elements, array of inserted elements
+			'sort', array of changes in format [newIndex, prevIndex]
 			'reverse'
-			'copyWithin', target, start, copied;
-			'fill', value, start, filled;
+			'copyWithin', target, start, array of overwritten elements;
+			'fill', fillValue, start, array of overwritten elements;
 			'length', len, prev
+			
+		array mutation functions 'push', 'pop', 'shift', 'unshift' are reported as calls to 'splice'
 	*/
 
 let map = new WeakMap();
