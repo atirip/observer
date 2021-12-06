@@ -1,4 +1,3 @@
-
 import { expect } from 'chai';
 import { validateProperty, validateArrayMutation } from '../extra/estonian-notation.js';
 

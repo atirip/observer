@@ -1,4 +1,3 @@
-
 import { expect } from 'chai';
 import { createObserver as createObservable, path, retrieve, nameSymbol } from '../observer.js';
 import { extend } from '../utils.js';
@@ -124,5 +123,14 @@ describe('Object Observer', function () {
 
 		expect(path(p.array[4], 'id')).to.equal('obj/array/4/id');
 		expect(retrieve(p, 'obj/array/4/id')).to.equal(source.array[4].id);
+	});
+
+	it('guard against cyclical references', function () {
+		let a = {};
+		let b = {};
+		a.b = b;
+		b.a = a;
+		let o = createObservable(a);
+		o.c = b;
 	});
 });

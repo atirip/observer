@@ -1,4 +1,3 @@
-
 /*
 		This is counterpart to ArrayTrap to unify undo/redo calls, it produces the same kind of a change that is  is undoabele and redoable
 
@@ -20,7 +19,6 @@
 		
 	
 	*/
-
 
 export class PropertyTrap {
 	constructor() {
@@ -65,5 +63,4 @@ export class PropertyTrap {
 		}
 		return approved;
 	}
-
 }

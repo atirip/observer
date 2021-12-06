@@ -1,4 +1,3 @@
-
 import { expect } from 'chai';
 import { createObserver as createObservable } from '../observer.js';
 import { extend } from '../utils.js';

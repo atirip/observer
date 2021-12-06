@@ -152,8 +152,8 @@ let proxy = createObserver(original, function onchange(target, ...args) {
 		args will be:
 		
 		on object property or array direct access:
-			'delete', property, value, prev
-			'set', property, value, prev
+			'delete', property, new value, previous value
+			'set', property, new value, previous value
 
 		on array mutation functions or direct length change:
 			'splice', start, array of deleted elements, array of inserted elements
@@ -161,7 +161,7 @@ let proxy = createObserver(original, function onchange(target, ...args) {
 			'reverse'
 			'copyWithin', target, start, array of overwritten elements;
 			'fill', fillValue, start, array of overwritten elements;
-			'length', len, prev
+			'length', len, previous length (if new length > previous length) or array of removed elements
 			
 		array mutation functions 'push', 'pop', 'shift', 'unshift' are reported as calls to 'splice'
 		

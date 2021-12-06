@@ -1,5 +1,5 @@
-import {ArrayTrap} from './array-trap.js';
-import {PropertyTrap} from './property-trap.js';
+import { ArrayTrap } from './array-trap.js';
+import { PropertyTrap } from './property-trap.js';
 import { values, entries, privateSymbol } from './utils.js';
 
 const parentSymbol = Symbol('parent');
@@ -14,13 +14,24 @@ function defineProperty(obj, key, value) {
 }
 
 function defineParentsAndNames(obj, parent, name) {
-	defineProperty(obj, parentSymbol, parent);
-	defineProperty(obj, nameSymbol, name);
-	for (let [key, child] of entries(obj)) {
-		if (typeof child == 'object' && child) {
-			defineParentsAndNames(child, obj, key);
+	let seen = new Set();
+
+	function recursively(obj, parent, name) {
+		if (seen.has(obj)) {
+			return;
+		} else {
+			seen.add(obj);
+		}
+		defineProperty(obj, parentSymbol, parent);
+		defineProperty(obj, nameSymbol, name);
+		for (let [key, child] of entries(obj)) {
+			if (child && typeof child == 'object') {
+				recursively(child, obj, key);
+			}
 		}
 	}
+
+	recursively(obj, parent, name);
 }
 
 function parent(obj) {
@@ -62,10 +73,10 @@ function arrayPath(target, key, targetIsParents) {
 
 function retrieve(obj, p = '/') {
 	if (p !== String(p)) return;
-	
+
 	if (p == '/') return obj;
 	if (p.charAt(0) == '/') p = p.substr(1);
-	
+
 	let keys = p.split('/');
 	if (name(obj)) keys.shift();
 	for (let key of values(keys)) {
@@ -83,7 +94,6 @@ function redefineArrayNames(target) {
 		}
 	}
 }
-
 
 let win = globalThis;
 
@@ -210,6 +220,5 @@ function createObserver(
 
 	return new win.Proxy(source, handler);
 }
-
 
 export { parentSymbol, nameSymbol, parent, path, retrieve, createObserver, arrayPath };

@@ -1,6 +1,6 @@
 import { extend } from './utils.js';
 import { path } from './observer.js';
-import {ArrayUndoRedo, PropertyUndoRedo} from './undo-redo.js';
+import { ArrayUndoRedo, PropertyUndoRedo } from './undo-redo.js';
 
 function applyChanges(target, method, changes, createObject) {
 	function prepareObjects(obj, arr) {

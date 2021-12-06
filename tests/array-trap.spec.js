@@ -1,12 +1,8 @@
-
 import { expect } from 'chai';
-import {ArrayTrap} from '../array-trap.js';
-import {ArrayUndoRedo} from '../undo-redo.js';
-
+import { ArrayTrap } from '../array-trap.js';
+import { ArrayUndoRedo } from '../undo-redo.js';
 
 describe('Array Trap', function () {
-
-
 	it('push', function () {
 		let p = new ArrayTrap();
 		let a = [];
