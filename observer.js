@@ -146,6 +146,9 @@ function createObserver(
 	validate = () => {
 		return true;
 	},
+	equal = (a, b) => {
+		return a == b;
+	},
 	name
 ) {
 	let arrayTrap = new ArrayTrap();
@@ -189,12 +192,12 @@ function createObserver(
 		set(target, key, value) {
 			if (arrayIsMutating) return true;
 
-			if (target[key] != value) {
-				if (typeof value == 'function') {
-					target[key] = value;
-					return true;
-				}
+			if (typeof value == 'function' && target[key] != value) {
+				target[key] = value;
+				return true;
+			}
 
+			if (!equal(target[key], value)) {
 				if (Array.isArray(target) && key == 'length') {
 					let res = arrayTrap[key](target, value);
 					if (arrayTrap.change.length) {

@@ -113,9 +113,8 @@ describe('Object Observer', function () {
 		p = createObservable(
 			extend(source),
 			undefined,
-			function () {
-				return true;
-			},
+			undefined,
+			undefined,
 			'obj'
 		);
 		expect(path(p.array[4])).to.equal('obj/array/4');
