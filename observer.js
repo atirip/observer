@@ -142,15 +142,22 @@ let map = new WeakMap();
 
 function createObserver(
 	source,
-	onchange = () => {},
-	validate = () => {
-		return true;
-	},
-	equal = (a, b) => {
-		return a == b;
-	},
-	name
+	{
+		onchange = () => {},
+		validate = () => {
+			return true;
+		},
+		equal = (a, b) => {
+			return a == b;
+		},
+		name = undefined,
+		patchObjects = undefined,
+		deleteProperties = true
+	
+	} = {}
 ) {
+
+
 	let arrayTrap = new ArrayTrap();
 	let propertyTrap = new PropertyTrap();
 

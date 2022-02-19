@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { createObserver as createObservable } from '../observer.js';
+import { createObserver } from '../observer.js';
 import { extend } from '../utils.js';
 import { ObserverSnapshot } from '../observer-snapshot.js';
 
@@ -7,8 +7,10 @@ let max = 2;
 
 function createSnapshotObserver(obj) {
 	let history;
-	let observable = createObservable(obj, function (...args) {
-		history.onchange(observable, ...args);
+	let observable = createObserver(obj, {
+		onchange: function (...args) {
+			history.onchange(observable, ...args);
+		},
 	});
 	history = new ObserverSnapshot({ root: observable, max: max });
 	history.endure();

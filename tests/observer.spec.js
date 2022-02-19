@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { createObserver as createObservable, path, retrieve, nameSymbol } from '../observer.js';
+import { createObserver, path, retrieve, nameSymbol } from '../observer.js';
 import { extend } from '../utils.js';
 
 describe('Object Observer', function () {
@@ -33,32 +33,33 @@ describe('Object Observer', function () {
 	});
 
 	it('create observable', function () {
-		expect(createObservable({})).to.be.a('object');
-		expect(createObservable(extend(source))).to.be.deep.equal(source);
+		expect(createObserver({})).to.be.a('object');
+		expect(createObserver(extend(source))).to.be.deep.equal(source);
 	});
 
 	it('validation', function () {
-		let o = createObservable(
+		let o = createObserver(
 			{
 				boolean: true,
 				string: 'data',
 				number: 231321,
 			},
-			undefined,
-			function (target, op, key, valueRef, prev) {
-				if (key == 'boolean') {
-					// allow all changes
-					return true;
-				}
-				if (key == 'string') {
-					// prevent any changes
-					return false;
-				}
-				if (key == 'number') {
-					// prevent any change and force the value to 1
-					valueRef.value = 1;
-					return true;
-				}
+			{
+				validate: function (target, op, key, valueRef, prev) {
+					if (key == 'boolean') {
+						// allow all changes
+						return true;
+					}
+					if (key == 'string') {
+						// prevent any changes
+						return false;
+					}
+					if (key == 'number') {
+						// prevent any change and force the value to 1
+						valueRef.value = 1;
+						return true;
+					}
+				},
 			}
 		);
 
@@ -77,32 +78,38 @@ describe('Object Observer', function () {
 	});
 
 	it('detect changes', function () {
-		createObservable(extend(source), function (target, op, key, value, prev, receiver) {
-			expect(key).to.equal('boolean');
-			expect(value).to.equal(false);
-			expect(prev).to.equal(true);
-			expect(path(target, key)).to.equal('boolean');
+		createObserver(extend(source), {
+			onchange: function (target, op, key, value, prev) {
+				expect(key).to.equal('boolean');
+				expect(value).to.equal(false);
+				expect(prev).to.equal(true);
+				expect(path(target, key)).to.equal('boolean');
+			},
 		}).boolean = false;
 
 		let obj = extend(source);
-		createObservable(obj, function (target, op, key, value, prev, receiver) {
-			expect(key).to.equal('id');
-			expect(value).to.equal('blaah');
-			expect(prev).to.equal(source.array[4].id);
-			expect(path(target, key)).to.equal('array/4/id');
+		createObserver(obj, {
+			onchange: function (target, op, key, value, prev) {
+				expect(key).to.equal('id');
+				expect(value).to.equal('blaah');
+				expect(prev).to.equal(source.array[4].id);
+				expect(path(target, key)).to.equal('array/4/id');
+			},
 		}).array[4].id = 'blaah';
 	});
 
 	it('redefine arrays object names', function () {
 		let obj = extend(source);
-		let o = createObservable(obj);
+		let o = createObserver(obj);
 		o.array.shift();
 		expect(o.array[3][nameSymbol]).to.equal('3');
 	});
 
 	it('create paths acces property by path', function () {
-		let p = createObservable(extend(source), undefined, function () {
-			return true;
+		let p = createObserver(extend(source), {
+			validate: function () {
+				return true;
+			},
 		});
 		expect(path(p.array[4])).to.equal('array/4');
 		expect(retrieve(p, 'array/4')).to.deep.equal(source.array[4]);
@@ -110,13 +117,7 @@ describe('Object Observer', function () {
 		expect(path(p.array[4], 'id')).to.equal('array/4/id');
 		expect(retrieve(p, 'array/4/id')).to.equal(source.array[4].id);
 
-		p = createObservable(
-			extend(source),
-			undefined,
-			undefined,
-			undefined,
-			'obj'
-		);
+		p = createObserver(extend(source), { name: 'obj' });
 		expect(path(p.array[4])).to.equal('obj/array/4');
 		expect(retrieve(p, 'obj/array/4')).to.deep.equal(source.array[4]);
 
@@ -129,7 +130,7 @@ describe('Object Observer', function () {
 		let b = {};
 		a.b = b;
 		b.a = a;
-		let o = createObservable(a);
+		let o = createObserver(a);
 		o.c = b;
 	});
 });

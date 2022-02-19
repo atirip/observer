@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { createObserver as createObservable } from '../observer.js';
+import { createObserver } from '../observer.js';
 import { applyChanges, getChange } from '../observer-history.js';
 
 describe('Object Sync', function () {
@@ -26,9 +26,11 @@ describe('Object Sync', function () {
 		var bObj = {};
 
 		function createProxy(obj, onchange) {
-			return createObservable(obj, function (...args) {
-				let change = getChange(false, ...args);
-				if (change.length) onchange(change);
+			return createObserver(obj, {
+				onchange: function (...args) {
+					let change = getChange(false, ...args);
+					if (change.length) onchange(change);
+				},
 			});
 		}
 
@@ -36,7 +38,7 @@ describe('Object Sync', function () {
 			applyChanges(bProxy, 'redo', change);
 		});
 
-		var bProxy = createProxy(bObj, function (change) {
+		var bProxy = createProxy(bObj, function () {
 			expect(bObj).to.be.deep.equal(aObj);
 		});
 

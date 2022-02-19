@@ -1,12 +1,14 @@
 import { expect } from 'chai';
-import { createObserver as createObservable } from '../observer.js';
+import { createObserver } from '../observer.js';
 import { extend } from '../utils.js';
 import { ObserverHistory } from '../observer-history.js';
 
 function createObjectWithHistory(obj) {
 	let history;
-	let observable = createObservable(obj, function (...args) {
-		history.onchange(observable, ...args);
+	let observable = createObserver(obj, {
+		onchange: function (...args) {
+			history.onchange(observable, ...args);
+		},
 	});
 	history = new ObserverHistory({ root: observable, repetitiveDelay: 100 });
 	history.endure();
@@ -36,8 +38,8 @@ describe('Object History', function () {
 	});
 
 	it('create observable', function () {
-		expect(createObservable({})).to.be.a('object');
-		expect(createObservable(extend(source))).to.be.deep.equal(source);
+		expect(createObserver({})).to.be.a('object');
+		expect(createObserver(extend(source))).to.be.deep.equal(source);
 	});
 
 	it('change/undo/redo', function () {
