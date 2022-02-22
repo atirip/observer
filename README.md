@@ -44,7 +44,7 @@ function createSimpleProxy(obj) {
 }
 	
 function createProxy(obj) {
-	return createObserver(obj, function explain(target, op, ...args) {
+	return createObserver(obj, {onchange: function explain(target, op, ...args) {
 		let path;
 		let desc = '';
 		if (Array.isArray(target)) {
@@ -56,7 +56,7 @@ function createProxy(obj) {
 			if (op != 'delete') desc = stringify(newValue);
 		}
 		console.log(`${op} '${path}' to '${desc}'`);
-	});
+	}});
 }
 
 // Objects
@@ -145,7 +145,7 @@ import {createObserver} from './observer/observer.js';
 
 let original = {};
 
-let proxy = createObserver(original, function onchange(target, ...args) {
+let proxy = createObserver(original, {onchange: function onchange(target, ...args) {
 	/*
 		target is the object changed
 		
@@ -166,5 +166,5 @@ let proxy = createObserver(original, function onchange(target, ...args) {
 		array mutation functions 'push', 'pop', 'shift', 'unshift' are reported as calls to 'splice'
 		
 	*/
-})
+}})
 ```
