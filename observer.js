@@ -152,12 +152,8 @@ function createObserver(
 		},
 		name = undefined,
 		patchObjects = undefined,
-		deleteProperties = true
-	
 	} = {}
 ) {
-
-
 	let arrayTrap = new ArrayTrap();
 	let propertyTrap = new PropertyTrap();
 
@@ -196,7 +192,7 @@ function createObserver(
 			}
 		},
 
-		set(target, key, value) {
+		set(target, key, value, receiver) {
 			if (arrayIsMutating) return true;
 
 			if (typeof value == 'function' && target[key] != value) {
@@ -214,9 +210,18 @@ function createObserver(
 					return res;
 				}
 
-				let res = propertyTrap.setProperty(target, key, value, validate);
-				res && onchange(target, ...propertyTrap.change);
-				return res;
+				let patched;
+				if (patchObjects) {
+					patched = patchObjects(receiver[key], value);
+				}
+
+				if (patched) {
+					return true;
+				} else {
+					let res = propertyTrap.setProperty(target, key, value, validate);
+					res && onchange(target, ...propertyTrap.change);
+					return res;
+				}
 			}
 			return true;
 		},
