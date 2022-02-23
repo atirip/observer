@@ -168,3 +168,38 @@ let proxy = createObserver(original, {onchange: function onchange(target, ...arg
 	*/
 }})
 ```
+
+There is opportunity to specify 3rd party equal function, like if one wants to support deep-equal comparisons. That if beneficial for example
+when replacing structure with deep-equal strucure, normally whole structure is then replaced.
+
+```js
+import {createObserver} from './observer/observer.js';
+
+import {deepEqual} from 'deep-equal.js';
+
+let proxy = createObserver({}, {
+	onchange: function onchange(target, ...args) {
+	},
+	equal: function(a,b) {
+		return deepEqual(a,b);
+	}
+})
+```
+
+There is opportunity to specify 3rd party patch function (ore one can use patch.js provided in this repo) to patch/sync structures without replacing
+them wholly. 
+
+```js
+import {createObserver} from './observer/observer.js';
+import {patch} from './observer/patch.js';
+
+let proxy = createObserver({}, {
+	onchange: function onchange(target, ...args) {
+	},
+	patchObjects: function(target, newValue) {
+		// return truthy falsy of whether something is patched
+		return !!patch(target, newValue);
+	}
+})
+```
+
