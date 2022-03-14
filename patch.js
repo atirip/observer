@@ -33,7 +33,7 @@ function patch(
 		set = setProp,
 	} = {}
 ) {
-	let res = 0;
+	let res = -1; //failure
 
 	function patchElement(target, source, prop) {
 		let sourceType = typeStr(source[prop]);
@@ -88,6 +88,7 @@ function patch(
 
 	let sourceType = typeStr(source);
 	if (typeStr(target) == sourceType) {
+		res++; 
 		if (sourceType == 'array') {
 			patchArray(target, source);
 		} else if (sourceType == 'object') {

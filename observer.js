@@ -211,12 +211,12 @@ function createObserver(
 					return res;
 				}
 
-				let patched;
+				let patched = -1;
 				if (patchObjects) {
 					patched = patchObjects(receiver[key], value);
 				}
 
-				if (patched) {
+				if (~patched) {
 					return true;
 				} else {
 					let res = propertyTrap.setProperty(target, key, value, validate);
