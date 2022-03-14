@@ -152,6 +152,7 @@ function createObserver(
 		},
 		name = undefined,
 		patchObjects = undefined,
+		//deleteProperties = true,
 	} = {}
 ) {
 	let arrayTrap = new ArrayTrap();
@@ -236,4 +237,4 @@ function createObserver(
 	return new win.Proxy(source, handler);
 }
 
-export { parentSymbol, nameSymbol, parent, path, retrieve, createObserver, arrayPath };
+export { parentSymbol, nameSymbol, parent, path, retrieve, createObserver, arrayPath, defineParentsAndNames };

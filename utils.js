@@ -69,4 +69,24 @@ function extend(/*dst,src1, src2, src3*/) {
 	return dst;
 }
 
-export { privateSymbol, entries, keys, values, extend };
+function empty(x) {
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	// undefined, '', null, 0, empty array
+	if (!x || x.length === 0) {
+		return true;
+	}
+	var type = typeStr(x);
+	if (type == 'array') return;
+	// empty {}
+	if (type == 'object') {
+		for (var n in x) {
+			if (hasOwnProperty.call(x, n)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	// convert to string and match single non-space character
+	return !(x + '').match(/\S/);
+}
+export { privateSymbol, entries, keys, values, extend, typeStr, empty };
