@@ -23,6 +23,25 @@ let source = {
 };
 
 describe('Patch', function () {
+
+	it('should patch arrays', function () {
+		
+		let a = [{a:7},{a:2},{a:3},{a:4},{a:5},{a:6}];
+		let b = [{a:4},{a:5},{a:6}];
+
+		let ab = patch(a, b);
+
+		expect(a).to.be.deep.equal(b);
+
+		let c = [{a:7},{a:2},{a:3}];
+		let d = [{a:1},{a:2},{a:3},{a:4},{a:5},{a:6}];
+
+		let cd = patch(c, d);
+		expect(c).to.be.deep.equal(d);
+
+	});
+
+
 	it('should patch the target', function () {
 		//expect(patch(2, 3)).to.be.deep.equal(3);
 

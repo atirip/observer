@@ -59,9 +59,10 @@ function patch(
 			target.length = source.length;
 			res++;
 		} else if (source.length > target.length) {
-			i = source.length - target.length;
+			let t = target.length;
+			i = source.length - t;
 			while (i--) {
-				patchElement(target, source, target.length + i);
+				patchElement(target, source, t + i);
 			}
 		}
 	}
@@ -88,10 +89,11 @@ function patch(
 
 	let sourceType = typeStr(source);
 	if (typeStr(target) == sourceType) {
-		res++; 
 		if (sourceType == 'array') {
+			res++; 
 			patchArray(target, source);
 		} else if (sourceType == 'object') {
+			res++; 
 			patchObject(target, source);
 		}
 	}
