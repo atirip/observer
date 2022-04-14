@@ -152,7 +152,9 @@ function createObserver(
 		},
 		name = undefined,
 		patchObjects = undefined,
-		//deleteProperties = true,
+		exclude = () => {
+			return false;
+		},
 	} = {}
 ) {
 	let arrayTrap = new ArrayTrap();
@@ -161,6 +163,14 @@ function createObserver(
 	defineParentsAndNames(source, null, name);
 
 	let arrayIsMutating;
+
+	function excludeProperty(prop) {
+		// DOM cannot be proxied (no traps will fire) and if done, the proxy cannot be used f.e appendChild(proxiedNode) will throw
+		if (typeof HTMLElement == 'function' &&  prop instanceof HTMLElement) {
+			return true;
+		}
+		return exclude(prop);
+	}
 
 	let handler = {
 		get(target, key) {
@@ -180,10 +190,12 @@ function createObserver(
 				};
 			}
 
-			if (typeof prop == 'object' && prop && key != parentSymbol && key != privateSymbol && !Object.getOwnPropertyDescriptor(prop, 'get')) {
+			if (typeof prop == 'object' && prop && key != parentSymbol && key != privateSymbol && !Object.getOwnPropertyDescriptor(target, key).get && !excludeProperty(prop) ) {
 				let proxy = map.get(prop);
 				if (!proxy) {
-					defineParentsAndNames(prop, target, key);
+ 					if (prop[nameSymbol] !== key) {
+						defineParentsAndNames(prop, target, key);
+					}
 					proxy = new Proxy(prop, handler);
 					map.set(prop, proxy);
 				}

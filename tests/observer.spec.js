@@ -131,6 +131,9 @@ describe('Object Observer', function () {
 		a.b = b;
 		b.a = a;
 		let o = createObserver(a);
+		b.c = o;
 		o.c = b;
+		expect(1).to.equal(1);
+		
 	});
 });
