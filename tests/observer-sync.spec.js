@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { createObserver } from '../observer.js';
-import { applyChanges, getChange } from '../observer-history.js';
+import { applyChanges, getChange } from '../change.js';
 
 describe('Object Sync', function () {
 	// this is specific test file to test the reliability of object observer and history.
