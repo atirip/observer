@@ -1,3 +1,4 @@
+import { createObserver } from './observer.js';
 import { applyChanges, getChange } from './change.js';
 
 class ObserverHistory {
@@ -166,4 +167,26 @@ class ObserverHistory {
 	}
 }
 
-export { ObserverHistory, applyChanges, getChange };
+function createInstance(cnstrctr, source, options = {}) {
+	let history;
+	let proxy;
+	function onchange (...args) {
+		if (options.onchange) {
+			options.onchange(...args);
+		}
+		history.onchange(proxy, ...args);
+	}
+	proxy = createObserver(source, {
+		onchange
+	});
+	history = new cnstrctr(Object.assign({ root: proxy}, options));
+	history.endure();
+	history.mixin(proxy);
+	return proxy;
+}
+
+function createHistoryObserver(...args) {
+	return createInstance(ObserverHistory, ...args);
+}
+
+export { createHistoryObserver, createInstance, ObserverHistory };

@@ -1,22 +1,8 @@
 import { expect } from 'chai';
-import { createObserver } from '../observer.js';
 import { extend } from '../utils.js';
-import { ObserverSnapshot } from '../observer-snapshot.js';
+import { createSnapshotObserver } from '../observer-snapshot.js';
 
 let max = 2;
-
-function createSnapshotObserver(obj) {
-	let history;
-	let observable = createObserver(obj, {
-		onchange: function (...args) {
-			history.onchange(observable, ...args);
-		},
-	});
-	history = new ObserverSnapshot({ root: observable, max: max });
-	history.endure();
-	history.mixin(observable);
-	return observable;
-}
 
 describe('Snapshot Oberver', function () {
 	//PS! this is more like a development helper, there are assumptions that stuff elsewhere works as expected
@@ -35,7 +21,7 @@ describe('Snapshot Oberver', function () {
 	};
 
 	it('create snapshots', function () {
-		let o = createSnapshotObserver(extend(source));
+		let o = createSnapshotObserver(extend(source), {max});
 		let initial = extend(o);
 		let r;
 

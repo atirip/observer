@@ -8,7 +8,7 @@
 	
 	*/
 
-import { ObserverHistory } from './observer-history.js';
+import { createInstance, ObserverHistory } from './observer-history.js';
 
 const max = 1000;
 
@@ -74,4 +74,7 @@ class ObserverSnapshot extends ObserverHistory {
 	}
 }
 
-export { ObserverSnapshot };
+function createSnapshotObserver(...args) {
+	return createInstance(ObserverSnapshot, ...args);
+}
+export { createSnapshotObserver };

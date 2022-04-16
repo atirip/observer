@@ -1,8 +1,9 @@
 import { expect } from 'chai';
 import { createObserver } from '../observer.js';
 import { extend } from '../utils.js';
-import { ObserverHistory } from '../observer-history.js';
+import { createHistoryObserver } from '../observer-history.js';
 
+/*
 function createObjectWithHistory(obj) {
 	let history;
 	let observable = createObserver(obj, {
@@ -15,7 +16,7 @@ function createObjectWithHistory(obj) {
 	history.mixin(observable);
 	return observable;
 }
-
+*/
 describe('Object History', function () {
 	//PS! this is more like a development helper, there are assumptions that stuff elsewhere works as expected
 	// the sole purpose is it to be as module test and continue to safely developing other stuff that depends on this and
@@ -43,7 +44,7 @@ describe('Object History', function () {
 	});
 
 	it('change/undo/redo', function () {
-		let o = createObjectWithHistory(source);
+		let o = createHistoryObserver(source);
 
 		let initial = extend(o);
 
@@ -66,7 +67,9 @@ describe('Object History', function () {
 	});
 
 	it('repetitive changes', async function () {
-		let o = createObjectWithHistory(extend(source));
+		let o = createHistoryObserver(extend(source), {
+			repetitiveDelay: 100,
+		});
 
 		//let initial = extend(o);
 
