@@ -170,16 +170,16 @@ class ObserverHistory {
 function createInstance(cnstrctr, source, options = {}) {
 	let history;
 	let proxy;
-	function onchange (...args) {
+	function onchange(...args) {
 		if (options.onchange) {
 			options.onchange(...args);
 		}
 		history.onchange(proxy, ...args);
 	}
 	proxy = createObserver(source, {
-		onchange
+		onchange,
 	});
-	history = new cnstrctr(Object.assign({ root: proxy}, options));
+	history = new cnstrctr(Object.assign({ root: proxy }, options));
 	history.endure();
 	history.mixin(proxy);
 	return proxy;

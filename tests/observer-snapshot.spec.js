@@ -21,7 +21,7 @@ describe('Snapshot Oberver', function () {
 	};
 
 	it('create snapshots', function () {
-		let o = createSnapshotObserver(extend(source), {max});
+		let o = createSnapshotObserver(extend(source), { max });
 		let initial = extend(o);
 		let r;
 
