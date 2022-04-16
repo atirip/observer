@@ -180,7 +180,9 @@ function createInstance(cnstrctr, source, options = {}) {
 		onchange,
 	});
 	history = new cnstrctr(Object.assign({ root: proxy }, options));
-	history.endure();
+	if (!options.paused) {
+		history.endure();
+	}
 	history.mixin(proxy);
 	return proxy;
 }
