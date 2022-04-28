@@ -4,6 +4,7 @@ import { values, entries, privateSymbol } from './utils.js';
 
 const parentSymbol = Symbol('parent');
 const nameSymbol = Symbol('name');
+const originalSymbol = Symbol('original');
 
 function defineProperty(obj, key, value) {
 	if (value === undefined) return;
@@ -190,7 +191,8 @@ function createObserver(
 				};
 			}
 
-			if (typeof prop == 'object' && prop && key != parentSymbol && key != privateSymbol && !Object.getOwnPropertyDescriptor(target, key).get && !excludeProperty(prop) ) {
+			let typeStr = Object.prototype.toString.call(prop);
+			if ((typeStr == '[object Object]' || typeStr == '[object Array]') && prop && key != parentSymbol && key != privateSymbol && !Object.getOwnPropertyDescriptor(prop, 'get') && typeof target[nameSymbol] != 'symbol') {
 				let proxy = map.get(prop);
 				if (!proxy) {
  					if (prop[nameSymbol] !== key) {
@@ -208,7 +210,7 @@ function createObserver(
 		set(target, key, value, receiver) {
 			if (arrayIsMutating) return true;
 
-			if (typeof value == 'function' && target[key] != value) {
+			if ((typeof value == 'function' || typeof target[nameSymbol] == 'symbol' || typeof key == 'symbol') && target[key] != value) {
 				target[key] = value;
 				return true;
 			}
@@ -246,7 +248,11 @@ function createObserver(
 		},
 	};
 
-	return new win.Proxy(source, handler);
+	let proxy = new win.Proxy(source, handler);
+	proxy[originalSymbol] = function () {
+		return source;
+	};
+	return proxy;
 }
 
-export { parentSymbol, nameSymbol, parent, path, retrieve, createObserver, arrayPath, defineParentsAndNames };
+export { originalSymbol, parentSymbol, nameSymbol, parent, path, retrieve, createObserver, arrayPath, defineParentsAndNames };
